@@ -1,14 +1,13 @@
 import { test } from 'tap'
 import { build } from '../helper'
 
-test('/products/raw/:id', async (t) => {
+test('200 /products/raw/:id', async (t) => {
   const app = await build(t)
 
   const res = await app.inject({
     url: '/products/raw/1'
   })
 
-  // Verifica che il JSON abbia la struttura desiderata
   t.match(JSON.parse(res.payload), { status: "OK", 
     data: {
       id: Number,
@@ -27,27 +26,44 @@ test('/products/raw/:id', async (t) => {
   t.equal(res.statusCode, 200, 'returns a status code of 200')
 })
 
+test('404 /products/raw/:id', async (t) => {
+  const app = await build(t)
+
+  const res = await app.inject({
+    url: '/products/raw/sdf'
+  })
+
+  t.equal(res.statusCode, 404, 'returns a status code of 404')
+})
+
 test('/products/proc/:id', async (t) => {
   const app = await build(t)
 
   const res = await app.inject({
     url: '/products/proc/1'
   })
-
-  // Verifica che il JSON abbia la struttura desiderata
-  t.match(JSON.parse(res.payload), { status: "OK", 
+  
+  t.match(JSON.parse(res.payload), { 
+    status: "OK",
     data: {
-      status: "OK", 
-      data: {
-          id: Number,
-          price: Number,
-          priceSell: Number,
-          totalStockValue: Number,
-          totalStockValueSell: Number
-      }
-  }
+      id: Number,
+      price: Number,
+      priceSell: Number,
+      totalStockValue: Number,
+      totalStockValueSell: Number      
+    }
   }, 'check response format');
   t.equal(res.statusCode, 200, 'returns a status code of 200')
+})
+
+test('404 /products/proc/:id', async (t) => {
+  const app = await build(t)
+
+  const res = await app.inject({
+    url: '/products/proc/sdf'
+  })
+
+  t.equal(res.statusCode, 404, 'returns a status code of 404')
 })
 
 test('/products/download/:id', async (t) => {
@@ -57,7 +73,6 @@ test('/products/download/:id', async (t) => {
     url: '/products/download/1'
   })
 
-  // Verifica che il JSON abbia la struttura desiderata
   t.match(JSON.parse(res.payload), {
       status: "OK",
       data: {
@@ -65,4 +80,14 @@ test('/products/download/:id', async (t) => {
       }
   }, 'check response format');
   t.equal(res.statusCode, 200, 'returns a status code of 200')
+})
+
+test('404 /products/download/:id', async (t) => {
+  const app = await build(t)
+
+  const res = await app.inject({
+    url: '/products/download/sdf'
+  })
+
+  t.equal(res.statusCode, 404, 'returns a status code of 404')
 })
