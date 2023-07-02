@@ -1,6 +1,8 @@
 import { join } from 'path';
 import AutoLoad, {AutoloadPluginOptions} from '@fastify/autoload';
 import { FastifyPluginAsync } from 'fastify';
+import fastifyEnv from '@fastify/env'
+import { envSchema } from './schema/schema';
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -17,6 +19,10 @@ const app: FastifyPluginAsync<AppOptions> = async (
 ): Promise<void> => {
   // Place here your custom code!
 
+  fastify.register(fastifyEnv, {    
+    dotenv: true,
+    schema: envSchema
+  })
   // Do not touch the following lines
 
   // This loads all plugins defined in plugins
@@ -38,3 +44,12 @@ const app: FastifyPluginAsync<AppOptions> = async (
 
 export default app;
 export { app, options }
+
+declare module 'fastify' {
+  export interface FastifyInstance {
+    config: { // this should be same as the confKey in options
+      // specify your typing here
+      PRODUCTS_API_URL: string
+    };
+  }
+}
