@@ -7,7 +7,7 @@ export interface SupportPluginOptions {
 // The use of fastify-plugin is required to be able
 // to export the decorators to the outer scope
 export default fp<SupportPluginOptions>(async (fastify, opts) => {
-  fastify.decorate('roundedDiscount', function (price: number, discountPercentage: number) : number{
+  fastify.decorate('roundedDiscount', function roundedDiscount(price: number, discountPercentage: number) : number{
     function roundPrice(number: number): number {
       const rounded = Math.round(number * 100) / 100;
       return +rounded.toFixed(2);
@@ -18,8 +18,8 @@ export default fp<SupportPluginOptions>(async (fastify, opts) => {
     return roundPrice(getDiscount(price, discountPercentage))
   })
 
-  fastify.decorate('getBase64FromUrl', async function (url: string) : Promise<string>{
-    let imageUrlData = await fetch(url)
+  fastify.decorate('getBase64FromUrl', async function getBase64FromUrl(url: string) : Promise<string>{
+    const imageUrlData = await fetch(url)
     const buffer = await imageUrlData.arrayBuffer();
     const stringifiedBuffer = Buffer.from(buffer).toString('base64');
     const contentType = imageUrlData.headers.get('content-type');
